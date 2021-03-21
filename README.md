@@ -6,6 +6,7 @@ Download all and put them to your server files
 Download this include and put to your `pawno/include`
 1. [discord-cmd] (https://github.com/AkshayMohan/pawn-discord-cmd) 
 2. [samp-discord-connector] (https://github.com/maddinat0r/samp-discord-connector)
+3. [Pawn.CMD] (https://github.com/katursis/Pawn.CMD/)
 
 ## Configuration
 
