@@ -13,7 +13,7 @@ new DCC_Channel:logchannel;
 
 public OnFilterScriptInit()
 {
-	logchannel = DCC_FindChannelById("814264424231600159"); //channel id yang ingin digunakan untuk audit log
+	logchannel = DCC_FindChannelById("11"); //channel id yang ingin digunakan untuk audit log
 	return 1;
 }
 
@@ -33,7 +33,7 @@ main()
 
 public OnGameModeInit()
 {
-	logchannel = DCC_FindChannelById("814264424231600159"); //channel id yang ingin digunakan untuk audit log
+	logchannel = DCC_FindChannelById("DISCORD CHANNELID"); //channel id yang ingin digunakan untuk audit log
 	return 1;
 }
 
@@ -44,33 +44,35 @@ public OnGameModeExit()
 
 public OnPlayerConnect(playerid)
 {
-	new msg[128], a[120];
-	GetPlayerName(playerid, a, MAX_PLAYER_NAME);
-	format(msg, sizeof(msg), "```%s[%d] telah terhubung kedalam server!```", a, playerid);
+	new msg[128], playername[MAX_PLAYER_NAME+1];
+	GetPlayerName(playerid, a, sizeof(playername));
+	format(msg, sizeof(msg), "```%s[%d] telah terhubung kedalam server!```", playername, playerid);
 	DCC_SendChannelMessage(logchannel, msg);
 	return 1;
 }
 
 public OnPlayerDisconnect(playerid, reason)
 {
+ 	new playername[MAX_PLAYER_NAME+1];
+	GetPlayerName(playerid, a, sizeof(playername));
 	switch(reason)
 	{
 	    case 0:
 	    {
 	        new msg[128];
-			format(msg, sizeof(msg), "```[LOGOUT] %s(%d) has leave from the server.(timeout/crash)```", pData[playerid][pName], playerid);
+			format(msg, sizeof(msg), "```[LOGOUT] %s(%d) has leave from the server.(timeout/crash)```", playername, playerid);
 			DCC_SendChannelMessage(logchannel, msg);
 		}
 		case 1:
 		{
 	        new msg[128];
-			format(msg, sizeof(msg), "```[LOGOUT] %s(%d) has leave from the server.(leaving)```", pData[playerid][pName], playerid);
+			format(msg, sizeof(msg), "```[LOGOUT] %s(%d) has leave from the server.(leaving)```", playername, playerid);
 			DCC_SendChannelMessage(logchannel, msg);
 		}
 		case 2:
 		{
   			new msg[128];
-			format(msg, sizeof(msg), "```[LOGOUT] %s(%d) has leave from the server.(Kick/Banned)```", pData[playerid][pName], playerid);
+			format(msg, sizeof(msg), "```[LOGOUT] %s(%d) has leave from the server.(Kick/Banned)```", playername, playerid);
 			DCC_SendChannelMessage(logchannel, msg);
 		}
 	}
@@ -79,9 +81,10 @@ public OnPlayerDisconnect(playerid, reason)
 
 public OnPlayerText(playerid, text[])
 {
- 	new msg[128];
-    format(msg, sizeof(msg), "```[CHAT] %s says :%s```", pData[playerid][pName], text);
-    DCC_SendChannelMessage(logchannel, msg);
+    	new msg[128], playername[MAX_PLAYER_NAME+1];
+	GetPlayerName(playerid, a, sizeof(playername));
+    	format(msg, sizeof(msg), "```[CHAT] %s says :%s```", playername, text);
+    	DCC_SendChannelMessage(logchannel, msg);
 	return 1;
 }
 
@@ -92,8 +95,9 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
         SendClientMessage(playerid, -1, "Unknown Command! /help for more info.");
         return 0;
     }
-    new msg[128];
-    format(msg, sizeof(msg), "```[CMD]: %s(%d) has used the command '%s' (%s)```", pData[playerid][pName], playerid, cmd, params);
+    new msg[128], playername[MAX_PLAYER_NAME+1];
+    GetPlayerName(playerid, a, sizeof(playername));;
+    format(msg, sizeof(msg), "```[CMD]: %s(%d) has used the command '%s' (%s)```", playername, playerid, cmd, params);
     DCC_SendChannelMessage(logchannel, msg);
     return 1;
 }
@@ -106,8 +110,8 @@ DCMD:kick(user, channel, params[]) {
     static
         reason[128];
 
-	new otherid, playername[20];
-	GetPlayerName(otherid, playername, MAX_PLAYER_NAME);
+	new otherid, playername[MAX_PLAYER_NAME+1];
+	GetPlayerName(playerid, a, sizeof(playername));
     if(sscanf(params, "us[128]", otherid, reason))
         return DCC_SendChannelMessage(channel, "/kick [playerid/PartOfName] [reason]");
 
